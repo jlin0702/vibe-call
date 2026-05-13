@@ -1,0 +1,139 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@theme {
+  --color-violet-electric: #8B5CF6;
+  --color-violet-glow: #A78BFA;
+  --color-violet-deep: #6D28D9;
+  --color-violet-dark: #4C1D95;
+  --color-surface-darkest: #0B0D13;
+  --color-surface-dark: #0F1119;
+  --color-surface-mid: #151823;
+  --color-surface-light: #1C2033;
+  --color-surface-lighter: #252A3A;
+  --color-border-subtle: rgba(139, 92, 246, 0.15);
+  --color-border-glow: rgba(139, 92, 246, 0.35);
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-status-online: #22C55E;
+  --color-status-idle: #F59E0B;
+  --color-status-dnd: #EF4444;
+  --color-status-offline: #6B7280;
+}
+
+/* ── Base ────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--color-surface-darkest);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Glassmorphism Utilities ─────────────────── */
+.glass {
+  background: rgba(15, 17, 25, 0.60);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.glass-light {
+  background: rgba(21, 24, 35, 0.50);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.glass-heavy {
+  background: rgba(11, 13, 19, 0.80);
+  backdrop-filter: blur(32px) saturate(1.3);
+  -webkit-backdrop-filter: blur(32px) saturate(1.3);
+  border: 1px solid var(--color-border-subtle);
+}
+
+/* ── Glow Effects ────────────────────────────── */
+.glow-violet {
+  box-shadow:
+    0 0 15px rgba(139, 92, 246, 0.15),
+    0 0 40px rgba(139, 92, 246, 0.05),
+    inset 0 0 30px rgba(139, 92, 246, 0.03);
+}
+
+.glow-violet-strong {
+  box-shadow:
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 0 40px rgba(139, 92, 246, 0.05);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+/* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.45);
+}
+
+/* ── Pulse Ring Animation ────────────────────── */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* ── Floating Gradient Orbs ──────────────────── */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-20px, 15px) scale(0.95); }
+  75% { transform: translate(15px, 25px) scale(1.02); }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 25s ease-in-out infinite;
+  animation-delay: -10s;
+}
+
+.animate-float-slow {
+  animation: float 30s ease-in-out infinite;
+  animation-delay: -5s;
+}
