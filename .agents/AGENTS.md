@@ -11,11 +11,17 @@
 - **Privacy:** Use LiveKit E2EE. Encryption keys stay local to the client.
 - **Stack:** Tauri v2, React (Vite), TypeScript, Rust, Supabase/Firebase.
 
-## Engineering Standards
-- **Component-First Architecture:** Never use raw `<div>` or `<button>` tags for UI elements. Use atoms from `@/components/ui` (Shadcn) exclusively.
-- **Semantic Layouts:** Use `<header>`, `<main>`, `<section>`, and `<nav>` to define the layout structure. 
-- **Tailwind Hygiene:** Avoid long strings of utility classes in `App.tsx`. Abstract complex styling into Tailwind variants within the component files or use the `cn()` utility for conditional classes.
+## Frontend Standards
+- **Atomic Design:** Use Shadcn/UI components as the "Atoms." If a UI element is used more than once, it must be promoted to a shared component in src/components/.
+- **Zero Raw Divs:** Prohibit the use of raw <div> tags for layout. Use semantic HTML (<main>, <section>, <nav>) or the Layout components defined in DESIGN.md.
+- **Tailwind Hygiene:** Use the cn() utility for conditional classes. Avoid "Tailwind Overload" in App.tsx by abstracting complex HUD elements into their own functional components.
 - **Zero Inline Styles:** All styling must be handled via Tailwind or the defined Design System tokens.
+
+## Rust Architecture
+- **Strict Modularity:** Never allow lib.rs to exceed 200 lines. All logic must be moved into the commands/, models/, or services/ modules.
+- **IPC Bridge Pattern:** Use src-tauri/src/commands/ as the Controller layer. Each file in this folder should correspond to a specific feature set (e.g., streaming.rs, auth.rs).
+- **State Management:** Use Tauri's Managed State (tauri::State) for global objects like LiveKit Room handles or Database pools, rather than global statics.
+- **Error Handling:** Always return Result<T, String> from Tauri commands so the frontend can catch and display errors gracefully.
 
 ## Design Consistency
 - **Source of Truth:** Always read `DESIGN.md` before generating or refactoring UI code. 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSCameraUsageDescription</key>
+  <string>Vibe Call requires camera access for video streaming.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Vibe Call requires microphone access for voice channels.</string>
+</dict>
+</plist>
