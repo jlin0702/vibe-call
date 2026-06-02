@@ -5,6 +5,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { GlassPanel } from "@/components/ui/glass-panel";
+import { IconButton } from "@/components/ui/icon-button";
+import { Badge } from "@/components/ui/badge";
+import { StatusDot } from "@/components/ui/status-dot";
 
 interface DockItem {
   id: string;
@@ -60,9 +64,11 @@ export default function TopDock() {
   const [activeItem, setActiveItem] = useState("home");
 
   return (
-    <nav
+    <GlassPanel
+      as="nav"
+      variant="heavy"
       id="top-dock"
-      className="glass-heavy flex items-center h-14 px-3 z-30 shrink-0"
+      className="flex items-center h-14 px-3 z-30 shrink-0"
     >
       {/* ── Logo ──────────────────────────────────── */}
       <Tooltip>
@@ -93,17 +99,12 @@ export default function TopDock() {
           return (
             <Tooltip key={item.id}>
               <TooltipTrigger asChild>
-                <button
+                <IconButton
                   id={`dock-${item.id}-btn`}
                   onClick={() => setActiveItem(item.id)}
-                  className={`
-                    relative flex items-center justify-center w-10 h-10 rounded-lg
-                    transition-all duration-250 ease-out
-                    ${isActive
-                      ? "bg-cobalt/15 text-cobalt-glow glow-cobalt"
-                      : "text-text-muted hover:text-text-secondary hover:bg-surface-light/40"
-                    }
-                  `}
+                  variant={isActive ? "cobalt" : "ghostMuted"}
+                  size="dock"
+                  className="relative"
                 >
                   <HexAvatar
                     size="xs"
@@ -121,16 +122,16 @@ export default function TopDock() {
 
                   {/* Notification badge */}
                   {item.mentions && item.mentions > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-status-dnd rounded-full flex items-center justify-center text-[9px] font-bold text-white px-1 border-[1.5px] border-surface-darkest">
+                    <Badge variant="notification" size="notification" position="top-right">
                       {item.mentions}
-                    </span>
+                    </Badge>
                   )}
 
                   {/* Notification dot */}
                   {item.hasNotification && !item.mentions && !isActive && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-cobalt-glow rounded-full" />
+                    <Badge variant="dot" size="dot" position="top-right" />
                   )}
-                </button>
+                </IconButton>
               </TooltipTrigger>
               <TooltipContent side="bottom">{item.name}</TooltipContent>
             </Tooltip>
@@ -140,12 +141,13 @@ export default function TopDock() {
         {/* Add Server */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <button
+            <IconButton
               id="dock-add-btn"
-              className="flex items-center justify-center w-10 h-10 rounded-lg text-status-online/70 hover:text-status-online hover:bg-status-online/10 transition-all duration-200"
+              variant="add"
+              size="dock"
             >
               <Plus size={18} />
-            </button>
+            </IconButton>
           </TooltipTrigger>
           <TooltipContent side="bottom">Add a Server</TooltipContent>
         </Tooltip>
@@ -155,12 +157,13 @@ export default function TopDock() {
       <div className="flex items-center gap-2 ml-auto">
         <Tooltip>
           <TooltipTrigger asChild>
-            <button
+            <IconButton
               id="dock-settings-btn"
-              className="p-2 rounded-lg text-text-muted hover:text-text-secondary hover:bg-surface-light/40 transition-colors"
+              variant="ghostMuted"
+              size="md"
             >
               <Settings size={16} />
-            </button>
+            </IconButton>
           </TooltipTrigger>
           <TooltipContent side="bottom">Settings</TooltipContent>
         </Tooltip>
@@ -173,12 +176,12 @@ export default function TopDock() {
                   JL
                 </span>
               </HexAvatar>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-status-online border-2 border-surface-darkest" />
+              <StatusDot status="online" size="sm" borderContext="darkest" />
             </button>
           </TooltipTrigger>
           <TooltipContent side="bottom">JackL — Online</TooltipContent>
         </Tooltip>
       </div>
-    </nav>
+    </GlassPanel>
   );
 }

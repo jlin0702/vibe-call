@@ -14,7 +14,8 @@
 ## Frontend Standards
 - **Atomic Design:** Use Shadcn/UI components as the "Atoms." If a UI element is used more than once, it must be promoted to a shared component in src/components/.
 - **Zero Raw Divs:** Prohibit the use of raw <div> tags for layout. Use semantic HTML (<main>, <section>, <nav>) or the Layout components defined in DESIGN.md.
-- **Tailwind Hygiene:** Use the cn() utility for conditional classes. Avoid "Tailwind Overload" in App.tsx by abstracting complex HUD elements into their own functional components.
+- **Tailwind Hygiene & Encapsulation:** Strict encapsulation is required for visual aesthetics. "Random" or long chains of visual Tailwind classes (e.g., `glass-heavy`, glows, backgrounds) are PROHIBITED in domain-level components (like App, Lobby, VideoArea). You MUST abstract these into reusable `src/components/ui/` primitives (e.g. `<GlassPanel>`, `<BackgroundOrbs>`). 
+- **Layouts:** Structural layout classes (`flex flex-col gap-4`) ARE permitted inline on domain components.
 - **Zero Inline Styles:** All styling must be handled via Tailwind or the defined Design System tokens.
 
 ## Rust Architecture

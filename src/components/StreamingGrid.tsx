@@ -8,6 +8,8 @@ import "@livekit/components-styles";
 import { WifiOff, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BackgroundOrbs } from "@/components/ui/background-orbs";
+import { GlassPanel } from "@/components/ui/glass-panel";
 
 // Reads from VITE_LIVEKIT_URL in your .env file
 const LIVEKIT_SERVER_URL = import.meta.env.VITE_LIVEKIT_URL;
@@ -40,11 +42,7 @@ export default function StreamingGrid({
       className="flex-1 flex flex-col min-w-0 relative overflow-hidden"
     >
       {/* Background gradient orbs per DESIGN.md */}
-      <aside aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
-        <span className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-cobalt/8 blur-3xl animate-float" />
-        <span className="absolute -bottom-48 -left-24 w-80 h-80 rounded-full bg-cobalt-deep/10 blur-3xl animate-float-delayed" />
-        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-cobalt-glow/5 blur-3xl animate-float-slow" />
-      </aside>
+      <BackgroundOrbs as="aside" />
 
       {/* Connection status bar */}
       <header className="flex items-center justify-between px-4 h-10 border-b border-border-subtle bg-surface-darkest/40 backdrop-blur-sm z-10">
@@ -74,9 +72,9 @@ export default function StreamingGrid({
         {/* Error state */}
         {streamState === "error" && (
           <article className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <figure className="w-16 h-16 rounded-2xl glass flex items-center justify-center">
+            <GlassPanel as="figure" className="w-16 h-16 flex items-center justify-center">
               <WifiOff size={28} className="text-status-dnd" />
-            </figure>
+            </GlassPanel>
             <p className="text-sm text-text-primary font-medium">Connection Lost</p>
             <p className="text-xs text-text-muted max-w-xs text-center">{error}</p>
             <Button

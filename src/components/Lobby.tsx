@@ -4,6 +4,8 @@ import { Shield, Radio, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { BackgroundOrbs } from "@/components/ui/background-orbs";
+import { GlassPanel } from "@/components/ui/glass-panel";
 
 interface LobbyProps {
   /** Called when the user successfully authenticates and receives a token */
@@ -50,22 +52,15 @@ export default function Lobby({ onJoin }: LobbyProps) {
       className="flex-1 flex items-center justify-center relative overflow-hidden"
     >
       {/* Background gradient orbs — per DESIGN.md §5.2 */}
-      <aside
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none overflow-hidden"
-      >
-        <span className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-cobalt/8 blur-3xl animate-float" />
-        <span className="absolute -bottom-48 -left-24 w-80 h-80 rounded-full bg-cobalt-deep/10 blur-3xl animate-float-delayed" />
-        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-cobalt-glow/5 blur-3xl animate-float-slow" />
-      </aside>
+      <BackgroundOrbs as="aside" />
 
       {/* Lobby card — glass-heavy per DESIGN.md §3.1 (modals, primary shell) */}
-      <article className="relative z-10 w-full max-w-sm glass-heavy rounded-2xl glow-cobalt p-8">
+      <GlassPanel as="article" variant="heavy" glow="cobalt" className="relative z-10 w-full max-w-sm p-8">
         {/* Header */}
         <header className="flex flex-col items-center gap-3 mb-8">
-          <figure className="w-14 h-14 rounded-2xl glass flex items-center justify-center glow-cobalt-strong">
+          <GlassPanel as="figure" glow="cobalt-strong" className="w-14 h-14 flex items-center justify-center">
             <Shield size={28} className="text-cobalt-glow" />
-          </figure>
+          </GlassPanel>
           <h1 className="text-[15px] font-semibold text-text-primary text-glow">
             Operator Login
           </h1>
@@ -163,7 +158,7 @@ export default function Lobby({ onJoin }: LobbyProps) {
             No account required · E2EE secured · Tokens scoped to session
           </p>
         </footer>
-      </article>
+      </GlassPanel>
     </section>
   );
 }
