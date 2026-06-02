@@ -1,12 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { useState } from "react";
 import {
   LiveKitRoom,
   VideoConference,
   RoomAudioRenderer,
 } from "@livekit/components-react";
 import "@livekit/components-styles";
-import { Loader2, WifiOff, Radio } from "lucide-react";
+import { WifiOff, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -14,39 +13,26 @@ import { cn } from "@/lib/utils";
 const LIVEKIT_SERVER_URL = import.meta.env.VITE_LIVEKIT_URL;
 
 interface StreamingGridProps {
+  /** JWT token for LiveKit authentication */
+  token: string;
   /** Room name to join — maps to a voice channel */
-  room?: string;
+  room: string;
   /** Display identity for this participant */
-  identity?: string;
+  identity: string;
+  /** Called when the user disconnects from the room */
+  onDisconnect?: () => void;
 }
 
-type ConnectionState = "idle" | "fetching" | "connected" | "error";
+type StreamState = "connecting" | "connected" | "error";
 
 export default function StreamingGrid({
-  room = "gaming-lounge",
-  identity = "JackL",
+  token,
+  room,
+  identity,
+  onDisconnect,
 }: StreamingGridProps) {
-  const [token, setToken] = useState<string | null>(null);
-  const [connectionState, setConnectionState] = useState<ConnectionState>("idle");
+  const [streamState, setStreamState] = useState<StreamState>("connecting");
   const [error, setError] = useState<string | null>(null);
-
-  const fetchToken = useCallback(async () => {
-    setConnectionState("fetching");
-    setError(null);
-    try {
-      const jwt = await invoke<string>("generate_token", { room, identity });
-      setToken(jwt);
-      setConnectionState("connected");
-    } catch (err) {
-      const message = typeof err === "string" ? err : "Failed to generate token";
-      setError(message);
-      setConnectionState("error");
-    }
-  }, [room, identity]);
-
-  useEffect(() => {
-    fetchToken();
-  }, [fetchToken]);
 
   return (
     <section
@@ -66,92 +52,67 @@ export default function StreamingGrid({
           <Radio
             size={14}
             className={cn(
-              connectionState === "connected" && "text-status-online",
-              connectionState === "fetching" && "text-cobalt-glow animate-pulse",
-              connectionState === "error" && "text-status-dnd",
-              connectionState === "idle" && "text-text-muted"
+              streamState === "connected" && "text-status-online",
+              streamState === "connecting" && "text-cobalt-glow animate-pulse",
+              streamState === "error" && "text-status-dnd"
             )}
           />
           <span className="text-xs font-medium text-text-primary">{room}</span>
           <span className="text-[11px] text-text-muted">
-            {connectionState === "connected" && "• Live"}
-            {connectionState === "fetching" && "• Connecting…"}
-            {connectionState === "error" && "• Disconnected"}
-            {connectionState === "idle" && "• Standby"}
+            {streamState === "connected" && "• Live"}
+            {streamState === "connecting" && "• Connecting…"}
+            {streamState === "error" && "• Disconnected"}
           </span>
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="text-[11px] text-text-muted">{identity}</span>
         </span>
       </header>
 
       {/* Main content area */}
       <section className="flex-1 z-10 relative">
-        {/* Loading state */}
-        {connectionState === "fetching" && (
-          <article className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <Loader2 size={32} className="text-cobalt-glow animate-spin" />
-            <p className="text-sm text-text-secondary">Generating secure token…</p>
-          </article>
-        )}
-
         {/* Error state */}
-        {connectionState === "error" && (
+        {streamState === "error" && (
           <article className="absolute inset-0 flex flex-col items-center justify-center gap-4">
             <figure className="w-16 h-16 rounded-2xl glass flex items-center justify-center">
               <WifiOff size={28} className="text-status-dnd" />
             </figure>
-            <p className="text-sm text-text-primary font-medium">Connection Failed</p>
+            <p className="text-sm text-text-primary font-medium">Connection Lost</p>
             <p className="text-xs text-text-muted max-w-xs text-center">{error}</p>
             <Button
               variant="outline"
               size="sm"
-              onClick={fetchToken}
+              onClick={() => onDisconnect?.()}
               className="mt-2 border-border-subtle text-text-secondary hover:text-text-primary hover:border-cobalt/40"
             >
-              Retry Connection
+              Return to Lobby
             </Button>
           </article>
         )}
 
         {/* LiveKit Video Conference */}
-        {connectionState === "connected" && token && (
+        {(streamState === "connecting" || streamState === "connected") && token && (
           <LiveKitRoom
             token={token}
             serverUrl={LIVEKIT_SERVER_URL}
             connect={true}
             audio={true}
-            video={true}
+            video={false}
             data-lk-theme="default"
             className="h-full w-full"
+            onConnected={() => setStreamState("connected")}
             onDisconnected={() => {
-              setConnectionState("idle");
-              setToken(null);
+              setStreamState("error");
+              onDisconnect?.();
             }}
             onError={(err) => {
               setError(err?.message || "LiveKit connection error");
-              setConnectionState("error");
+              setStreamState("error");
             }}
           >
             <VideoConference />
             <RoomAudioRenderer />
           </LiveKitRoom>
-        )}
-
-        {/* Idle state — no room selected */}
-        {connectionState === "idle" && !token && (
-          <article className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <figure className="w-16 h-16 rounded-2xl glass flex items-center justify-center glow-cobalt">
-              <Radio size={28} className="text-cobalt-glow" />
-            </figure>
-            <p className="text-sm text-text-primary font-medium">Ready to Stream</p>
-            <p className="text-xs text-text-muted">Select a voice channel to connect</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchToken}
-              className="mt-2 border-border-subtle text-text-secondary hover:text-text-primary hover:border-cobalt/40"
-            >
-              Connect to {room}
-            </Button>
-          </article>
         )}
       </section>
     </section>
